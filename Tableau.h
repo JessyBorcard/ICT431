@@ -120,7 +120,7 @@ void tableauChoix(){
     printf("comment s'appel le capitaine ? (un seul nom)\n");
     scanf("%s", captain_name); //save the input into captain_name as char
 
-    EcritureDocument(); //TODO create a functional function that write into a file.
+    EcritureDocument(captain_name); //TODO create a functional function that write into a file.
 
     printf("avez vous un code de triche? (1 = oui) : ");
     scanf("%d", &choix_code);//save the input into choix_code
@@ -332,20 +332,24 @@ int lectureDocument(){
 
 
 
+
     return 0; // return 0;
 
 
 }
 
 
-void EcritureDocument(char nom_captaine, int score, int vie_petit, int vie_moyen, int vie_grand, int immense_vie){
+void EcritureDocument(char nom_captaine[256], int score, int vie_petit, int vie_moyen, int vie_grand, int immense_vie){
 
-    char valeur = 0;
+    char valeur[256] ={0};
     FILE*fp;
 
-    valeur = nom_captaine;
+    for (int i = 0; nom_captaine[i] != 0 ; ++i) {
+        valeur[i] = nom_captaine[i];
+    }
+
     fp = fopen("Score.txt", "w");
-    fputc(valeur, fp);
+    fputs(valeur, fp);
     fclose(fp);
 }
 
