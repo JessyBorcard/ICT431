@@ -25,6 +25,7 @@ int main() {
 
 
     menu();
+    printf("test");
 
 
     return 0;
