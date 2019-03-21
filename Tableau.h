@@ -120,7 +120,7 @@ void tableauChoix(){
     printf("comment s'appel le capitaine ? (un seul nom)\n");
     scanf("%s", captain_name); //save the input into captain_name as char
 
-    EcritureDocument(captain_name); //TODO create a functional function that write into a file.
+
 
     printf("avez vous un code de triche? (1 = oui) : ");
     scanf("%d", &choix_code);//save the input into choix_code
@@ -129,7 +129,7 @@ void tableauChoix(){
         printf("Code de triche (décimal) : ");
         scanf("%d", &choix_code);//save the input into choix_code
         if (choix_code == 1234){//if choix_code equals 1234 the condition become true
-            printf("vous avez gagner !\n");
+            goto triche;
         }
     } else
         {
@@ -193,10 +193,12 @@ void tableauChoix(){
 
     do
     {
+        printf("\t\t-----la carte de %s-----", captain_name);
 
 
 
         tableauAffichage();
+
 
         printf("\nchoix de Ligne : ");
         scanf("%d", &lig); //save the input to lig
@@ -258,9 +260,11 @@ void tableauChoix(){
             }
         }
         if (vie_bateau == 0){
-
+            triche:
+            score=9;
             printf("vous avez gagner %s !\n", captain_name);
             printf(" nombres de coup : %d \n", boucle_test); // if vie de bateau equals 0 the victory menu shows
+            EcritureDocument(captain_name, score); //TODO create a functional function that write into a file.
             system("pause");
 
         }
@@ -313,43 +317,25 @@ int menu(){ // this is the main menu
             case 3:
                 return 1;
         }
-    }while(choix > 3); //loop for re-asking the question if choix is bigger than 2
+    }while(choix >= 3); //loop for re-asking the question if choix is bigger than 2
 
 
 }
 
-int lectureDocument(){
 
-
-     //declaring and initializing var
-
-
-
-
-
-
-
-
-
-
-
-    return 0; // return 0;
-
-
-}
 
 
 void EcritureDocument(char nom_captaine[256], int score, int vie_petit, int vie_moyen, int vie_grand, int immense_vie){
 
-    char valeur[256] ={0};
+    int index = 0;
+    char valeur[256] ={0}; //create an array full of 0
     FILE*fp;
 
-    for (int i = 0; nom_captaine[i] != 0 ; ++i) {
-        valeur[i] = nom_captaine[i];
-    }
+
 
     fp = fopen("Score.txt", "w");
-    fputs(valeur, fp);
+    fputs(nom_captaine, fp);
+    fprintf(fp, "%d", score);
     fclose(fp);
 }
 
