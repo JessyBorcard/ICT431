@@ -11,7 +11,7 @@
 #define IMMENSE_BATEAU 4
 #define SCORE_MULTIPLIER 10
 
-
+#include "cheh.h"
 #include <stdio.h>
 #include <windows.h>
 #include <string.h>
@@ -312,7 +312,7 @@ void tableauChoix(){
 int menu(){ // this is the main menu
 
 
-    int choix = 0;
+    char choix = 0;
 
 
 
@@ -329,22 +329,22 @@ int menu(){ // this is the main menu
         printf("2.Aide de jeu\n");
         printf("3.quiitez le programme\n");
         printf("votre choix :");
-        scanf("%d", &choix);
+        scanf("%s", &choix);
         switch (choix) {
 
-            case 1:
+            case '1':
 
                 tableauChoix(); //calling the tableauChoix function without any arguments
 
 
                 break;
-            case 2:
+            case '2':
                 printf("\nchoisissez une case et notez la en bas du programme, si la case n'est pas valable, le programme vous redemendra. \n");
                 break;
-            case 3:
+            case '3':
                 return 1;
         }
-    }while(choix >= 3); //loop for re-asking the question if choix is bigger than 3
+    }while(choix > *"3"); //loop for re-asking the question if choix is bigger than 3
 
 
 }
