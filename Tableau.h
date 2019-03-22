@@ -16,11 +16,12 @@
 #include <windows.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 
+void ecritureDocument(char, float);
+int randomiseur();
 
-
-int lectureDocument();
 
 
 
@@ -49,7 +50,7 @@ void tableauAffichage (){ //for showing the table as a graphic element
     int ligne = 0, colonne = 0, ligne_aff = 0;
     printf("\n");
     for (int col_aff = 1; col_aff < 11 ; ++col_aff) {
-        printf("    %d ", col_aff);
+        printf("    %d ", col_aff); //it shows the upper numbers
     }
     printf("\n");
     for ( ligne = 0; ligne < 10; ++ligne)
@@ -61,15 +62,15 @@ void tableauAffichage (){ //for showing the table as a graphic element
         }
         for (int loop1 = 0; loop1 < 1; ++loop1) {
             if (ligne_aff<=9) {
-                printf("%d |", ligne_aff);
+                printf("%d |", ligne_aff); //this is the int to 1 to 9
             }
             if (ligne_aff>=10){
-                printf("%d|", ligne_aff);
+                printf("%d|", ligne_aff); //and this one 10 to 99 because it has two numbers in it, the graphic element will shows normally without being offset
             }
 
             for ( colonne = 0; colonne < 10; ++colonne) {
 
-                printf(" %c   |", tableau_cord[ligne][colonne]);
+                printf(" %c   |", tableau_cord[ligne][colonne]); //print every char from the tableau_cord
 
             }
             printf("\n");
@@ -86,14 +87,14 @@ void tableauAffichage (){ //for showing the table as a graphic element
 }
 
 void tableauChoix(){
-
-    int col = 11, lig = 11, boucle_test = 0, nbr_de_coup = 0, choix_code, ligne = 0, colonne = 0, score = 0, num = 0;   //declaring and initializing variables
+    int col = 11, lig = 11, coup_donne = 0, nbr_de_coup = 0, choix_code, ligne = 0, colonne = 0, num = 0, random = 0;
+    float score = 0; //declaring and initializing variables
     char captain_name[256] = {0};
     int vie_bateau = 0;
-    int vie_petit_bateau = 2;
-    int vie_moyen_bateau = 3;
-    int vie_grand_bateau = 8;
-    int vie_immense_beateau = 5;
+    int vie_petit_bateau = 2; //this is how much the boats have squares
+    int vie_moyen_bateau = 3; //this is how much the boats have squares
+    int vie_grand_bateau = 8; //this is how much the boats have squares but this one has two boats, so it takes 4*2
+    int vie_immense_beateau = 5; //this is how much the boats have squares
     static int tableau [10][10] = { //this is where boats are, hard-coded, 1 are small boats, 2 are medium boats, 3 are big boats and 4 the huge boats
             0,0,1,1,0,0,0,0,0,2,
             0,0,0,0,0,0,0,0,0,2,
@@ -106,11 +107,21 @@ void tableauChoix(){
             0,4,4,4,4,4,0,0,0,0,
             0,0,0,0,0,0,0,0,0,0,
 
-    }, tableau_choix [10][10] = { 0 };
+    },tableau_choix [10][10] = { 0 };//this is on what the code will work with
+
+    random = randomiseur();
 
     FILE * fptr; //creating a fptr var from FILE
-    fptr = fopen("tableau.txt","r");//opening the file Tableaux.txt
-
+    if (random == 1){
+    fptr = fopen("tableau1.txt","r");//opening the file Tableaux.txt
+    } else if (random == 2) {
+        fptr =fopen("tableau2.txt", "r");
+    } else if (random == 3){
+        fptr=fopen("tableau3.txt", "r");
+    } else
+    {
+        printf("erreur dans le chargement de la carte");
+    }
 
 
     vie_bateau = vie_bateau + vie_petit_bateau + vie_moyen_bateau + vie_grand_bateau + vie_immense_beateau;//adds every life's boat into vie_bateau
@@ -208,66 +219,83 @@ void tableauChoix(){
         scanf("%d", &col); //save the input to col
         col--;
 
+        if (tableau_cord[lig][col] == *"X" || tableau_cord[lig][col] == *"-"){
+            printf("cette case est déjà touchée\n");
+        }
+
         if(tableau_choix[lig][col] == 0){
-
             printf("loupé! \n\n\n"); //if the player's choice of lig and col equals 0 it says loupé
+            tableau_cord[lig][col] = *"-";
         }
 
-        if(tableau_choix[lig][col] == PETIT_BATEAU){ // if the player's choice of lig and col equals 1 the result is true
-            tableau_cord[lig][col] = *"X"; //replacing the tableau_cord value depending on lig and col by an X
-            printf("\ntouché! \n\n\n");
-            score++; //adds 1 to score
-            vie_petit_bateau--; //soustract 1 from vie_petit_bateau
-            vie_bateau--; //soustract 1 from vie_bateau
-            if (vie_petit_bateau == 0) {  // if vie_petit_bateau equals 0 the condition shows that the petit bateau sinked
+
+        if (tableau_cord[lig][col] == *"X") {//beep
+
+        }else {
+            if (tableau_choix[lig][col] == PETIT_BATEAU) { // if the player's choice of lig and col equals 1 the result is true
+                tableau_cord[lig][col] = *"X"; //replacing the tableau_cord value depending on lig and col by an X
+                printf("\ntouché! \n\n\n");
+                score++; //adds 1 to score
+                vie_petit_bateau--; //soustract 1 from vie_petit_bateau
+                vie_bateau--; //soustract 1 from vie_bateau
+                if (vie_petit_bateau ==
+                    0) {  // if vie_petit_bateau equals 0 the condition shows that the petit bateau sinked
 
 
-                printf("Le petit bâteau à été coulé!!\n\n");
+                    printf("Le petit bâteau à été coulé!!\n\n");
+                    score = PETIT_BATEAU * SCORE_MULTIPLIER;
+                }
+
+
             }
+            if (tableau_choix[lig][col] == BATEAU_MOYEN) { // if the player's choice of lig and col equals 2 the result is true
+                tableau_cord[lig][col] = *"X"; //replacing the tableau_cord value depending on lig and col by an X
+                printf("\ntouché! \n\n\n");
+                score++; //adds 1 to score
+                vie_moyen_bateau--; //soustract 1 from vie_moyen_bateau
+                vie_bateau--; //soustract 1 from vie_bateau
+                if (vie_moyen_bateau ==
+                    0) {  // if vie_moyen_bateau equals 0 the condition shows that the moyen bateau sinked
 
-        }
-        if (tableau_choix[lig][col] == BATEAU_MOYEN){ // if the player's choice of lig and col equals 2 the result is true
-            tableau_cord[lig][col] = *"X"; //replacing the tableau_cord value depending on lig and col by an X
-            printf("\ntouché! \n\n\n");
-            score++; //adds 1 to score
-            vie_moyen_bateau--; //soustract 1 from vie_moyen_bateau
-            vie_bateau--; //soustract 1 from vie_bateau
-            if(vie_moyen_bateau == 0){  // if vie_moyen_bateau equals 0 the condition shows that the moyen bateau sinked
+                    printf("Le bâteau moyen à été coulé!!\n\n");
+                    score = BATEAU_MOYEN * SCORE_MULTIPLIER;
+                }
+            }
+            if (tableau_choix[lig][col] == GRAND_BATEAU) { // if the player's choice of lig and col equals 3 the result is true
+                tableau_cord[lig][col] = *"X"; //replacing the tableau_cord value depending on lig and col by an X
+                printf("\ntouché! \n\n\n");
+                score++; //adds 1 to score
+                vie_grand_bateau--; //soustract 1 from vie_grand_bateau
+                vie_bateau--; //soustract 1 from vie_bateau
+                if (vie_grand_bateau ==
+                    0) {  // if vie_grand_bateau equals 0 the condition shows that the grand bateau sinked
 
-                printf("Le bâteau moyen à été coulé!!\n\n");
+                    printf("Le grand bâteau à été coulé!! \n\n");
+                    score = GRAND_BATEAU * SCORE_MULTIPLIER;
+                }
+            }
+            if (tableau_choix[lig][col] == IMMENSE_BATEAU) { // if the player's choice of lig and col equals 4 the result is true
+                tableau_cord[lig][col] = *"X"; //replacing the tableau_cord value depending on lig and col by an X
+                printf("\ntouché! \n\n\n");
+                score++; //adds 1 to score
+                vie_immense_beateau--; //soustract 1 from vie_immense_bateau
+                vie_bateau--; //soustract 1 from vie_bateau
+                if (vie_immense_beateau ==
+                    0) { // if vie_immense_bateau equals 0 the condition shows that the immense bateau sinked
+                    printf("L'immense Bâteau à été coulé!!\n\n");
+                    score = IMMENSE_BATEAU * SCORE_MULTIPLIER; //save 4*10 into score
+                }
+            }
+            if (vie_bateau == 0) {
+                triche:
+                printf("vous avez gagner %s !\n", captain_name);
+                printf(" nombres de coup : %d \n", coup_donne); // if vie de bateau equals 0 the victory menu shows
+                score = score / coup_donne;
+                ecritureDocument(captain_name, score); //calls ecriture document with parameters captain_name and score
+                system("pause");
+
             }
         }
-        if (tableau_choix[lig][col] == GRAND_BATEAU){ // if the player's choice of lig and col equals 3 the result is true
-            tableau_cord[lig][col] = *"X"; //replacing the tableau_cord value depending on lig and col by an X
-            printf("\ntouché! \n\n\n");
-            score++; //adds 1 to score
-            vie_grand_bateau--; //soustract 1 from vie_grand_bateau
-            vie_bateau--; //soustract 1 from vie_bateau
-            if (vie_grand_bateau == 0){  // if vie_grand_bateau equals 0 the condition shows that the grand bateau sinked
-
-                printf("Le grand bâteau à été coulé!! \n\n");
-            }
-        }
-        if (tableau_choix[lig][col] == IMMENSE_BATEAU){ // if the player's choice of lig and col equals 4 the result is true
-            tableau_cord[lig][col] = *"X"; //replacing the tableau_cord value depending on lig and col by an X
-            printf("\ntouché! \n\n\n");
-            score++; //adds 1 to score
-            vie_immense_beateau--; //soustract 1 from vie_immense_bateau
-            vie_bateau--; //soustract 1 from vie_bateau
-            if(vie_immense_beateau == 0){ // if vie_immense_bateau equals 0 the condition shows that the immense bateau sinked
-                printf("L'immense Bâteau à été coulé!!\n\n");
-                score = IMMENSE_BATEAU*SCORE_MULTIPLIER; //save 4*10 into score
-            }
-        }
-        if (vie_bateau == 0){
-            triche:
-            score=9;
-            printf("vous avez gagner %s !\n", captain_name);
-            printf(" nombres de coup : %d \n", boucle_test); // if vie de bateau equals 0 the victory menu shows
-            EcritureDocument(captain_name, score); //TODO create a functional function that write into a file.
-            system("pause");
-
-        }
 
 
 
@@ -277,9 +305,8 @@ void tableauChoix(){
 
 
 
-
-        boucle_test++;
-    } while (boucle_test < nbr_de_coup); //this loop makes loops depending on how many times the player wants to play
+        coup_donne++;
+    } while (coup_donne < nbr_de_coup); //this loop makes loops depending on how many times the player wants to play
     }
 }
 int menu(){ // this is the main menu
@@ -317,29 +344,37 @@ int menu(){ // this is the main menu
             case 3:
                 return 1;
         }
-    }while(choix >= 3); //loop for re-asking the question if choix is bigger than 2
+    }while(choix >= 3); //loop for re-asking the question if choix is bigger than 3
 
 
 }
 
 
 
+void ecritureDocument(char nom_captaine, float score){ //this function has two parameters, it write down char and int into a file called score
 
-void EcritureDocument(char nom_captaine[256], int score, int vie_petit, int vie_moyen, int vie_grand, int immense_vie){
-
-    int index = 0;
-    char valeur[256] ={0}; //create an array full of 0
     FILE*fp;
 
 
 
-    fp = fopen("Score.txt", "w");
-    fputs(nom_captaine, fp);
-    fprintf(fp, "%d", score);
-    fclose(fp);
+    fp = fopen("Score.txt", "w"); //open Score.txt
+    fputs(nom_captaine, fp); //put the name of the captain into fp
+    fputs("-", fp); //put a - into fp
+    fprintf(fp, "%0.3f", score); //print into fp score as int
+    fclose(fp); //close fp
 }
 
-//TODO make a function that writes score into a file
+
+int randomiseur()
+{
+    int valeur=0;
+
+    srand((unsigned) time(NULL));
+    valeur=rand() % 3;
+
+    return valeur;
+
+};
 
 
 #endif //BATAILLENAVALE_TABLEAU_H
