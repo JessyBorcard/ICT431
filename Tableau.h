@@ -11,7 +11,6 @@
 #define IMMENSE_BATEAU 4
 #define SCORE_MULTIPLIER 10
 
-#include "cheh.h"
 #include <stdio.h>
 #include <windows.h>
 #include <string.h>
@@ -113,11 +112,11 @@ void tableauChoix(){
 
     FILE * fptr; //creating a fptr var from FILE
     if (random == 1){
-    fptr = fopen("tableau1.txt","r");//opening the file Tableaux.txt
+    fptr = fopen("tableau1.txt","r");//opening the file Tableaux1.txt
     } else if (random == 2) {
-        fptr =fopen("tableau2.txt", "r");
+        fptr =fopen("tableau2.txt", "r");//opening the file Tableaux2.txt
     } else if (random == 3){
-        fptr=fopen("tableau3.txt", "r");
+        fptr=fopen("tableau3.txt", "r");//opening the file Tableaux3.txt
     } else
     {
         printf("erreur dans le chargement de la carte");
@@ -133,19 +132,11 @@ void tableauChoix(){
 
 
 
-    printf("avez vous un code de triche? (1 = oui) : ");
-    scanf("%d", &choix_code);//save the input into choix_code
 
-    if (choix_code == 1){//if choix_code equals 1 the condition become true
-        printf("Code de triche (décimal) : ");
-        scanf("%d", &choix_code);//save the input into choix_code
-        if (choix_code == 1234){//if choix_code equals 1234 the condition become true
-            goto triche;
-        }
-    } else
-        {
 
-        printf("Choissez votre carte(1 = carte de base, 2 = carte créée par vous)");
+
+
+        printf("Choissez votre carte(1 = carte de base, 2 = carte aléatoire)");
         scanf("%d", &choix_code);
 
         if (choix_code == 1){ // if the choix_code equals 1 the condition becomes true
@@ -197,7 +188,7 @@ void tableauChoix(){
                 ligne++;//adds 1 to i
             }
             fclose(fptr); // close tableaux.txt
-        }
+
 
     printf("en combien de coup voulez vous jouer ? ");
     scanf("%d", &nbr_de_coup); //save the input to nbre_de_coup
@@ -211,13 +202,25 @@ void tableauChoix(){
         tableauAffichage();
 
 
-        printf("\nchoix de Ligne : ");
-        scanf("%d", &lig); //save the input to lig
-        lig--;
 
-        printf("\nchoix de Colonne : ");
-        scanf("%d", &col); //save the input to col
-        col--;
+        do {
+
+
+            printf("\nchoix de Ligne : ");
+            scanf("%d", &lig); //save the input to lig
+            lig--;
+
+            printf("\nchoix de Colonne : ");
+            scanf("%d", &col); //save the input to col
+            col--;
+
+            if(lig > 10 || col > 10){
+                printf("des valeurs entre 1 et 10!!\n");
+
+            }
+
+        } while (lig > 10 || col > 10);
+        system("cls");
 
         if (tableau_cord[lig][col] == *"X" || tableau_cord[lig][col] == *"-"){
             printf("cette case est déjà touchée\n");
@@ -327,7 +330,8 @@ int menu(){ // this is the main menu
     do {
         printf("1.Jouer \n");
         printf("2.Aide de jeu\n");
-        printf("3.quiitez le programme\n");
+        printf("3.credits\n");
+        printf("4.quiitez le programme\n");
         printf("votre choix :");
         scanf("%s", &choix);
         switch (choix) {
@@ -342,9 +346,12 @@ int menu(){ // this is the main menu
                 printf("\nchoisissez une case et notez la en bas du programme, si la case n'est pas valable, le programme vous redemendra. \n");
                 break;
             case '3':
+                    printf("ce projet a été créé par Jessy borcard.");
+                break;
+            case '4':
                 return 1;
         }
-    }while(choix > *"3"); //loop for re-asking the question if choix is bigger than 3
+    }while(choix > *"4"); //loop for re-asking the question if choix is bigger than 3
 
 
 }
@@ -369,8 +376,8 @@ int randomiseur()
 {
     int valeur=0;
 
-    srand((unsigned) time(NULL));
-    valeur=rand() % 3;
+    srand((unsigned) time(NULL)); //numbers will always be different
+    valeur= 1 + rand() % 2; //numbers between 1 and 2
 
     return valeur;
 
