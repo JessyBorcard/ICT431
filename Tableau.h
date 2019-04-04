@@ -293,63 +293,86 @@ void tableauChoix() {
                     score = IMMENSE_BATEAU * SCORE_MULTIPLIER; //save 4*10 into score
                 }
             }
-            if (vie_bateau == 0) {
-                triche:
-                printf("vous avez gagner %s !\n", captain_name);
-                printf(" nombres de coup : %d \n", coup_donne); // if vie de bateau equals 0 the victory menu shows
-                score = score / coup_donne;
-                ecritureDocument(captain_name,
-                                 score); //calls ecriture document with parameters captain_name and score
-                system("pause");
 
-            }
         }
 
 
         coup_donne++;
     } while (coup_donne < nbr_de_coup); //this loop makes loops depending on how many times the player wants to play
+    if (vie_bateau == 0) {
+
+        printf("vous avez gagner %s !\n", captain_name);
+        printf(" nombres de coup : %d \n", coup_donne); // if vie de bateau equals 0 the victory menu shows
+        ecritureDocument(captain_name,
+                         score); //calls ecriture document with parameters captain_name and score
+        system("pause");
+
+    } else {
+        printf("vous avez perdu %s...\n", captain_name);
+        printf(" nombres de coup : %d \n", coup_donne); //if the player doesn't sink every boats, this loop become true
+        ecritureDocument(captain_name,
+                         score); //calls ecriture document with parameters captain_name and score
+        system("pause");
+    }
 }
 
 
-int menu() { // this is the main menu
+int menu() { // this is the main menu. V1.3 04.04.2019 corrected a bug where the user could enter a value except a number.
 
 
     char choix = 0;
 
 
-    printf("--------Bataille Navale! 0.1--------\n");
+    printf("\n--------Bataille Navale! 0.1--------\n");
 
 
-    do {
+
         printf("1.Jouer \n");
         printf("2.Aide de jeu\n");
         printf("3.credits\n");
         printf("4.Classement\n");
-        printf("4.Quittez le programme\n");
+        printf("5.Quittez le programme\n");
         printf("votre choix :");
         scanf("%s", &choix);
-        switch (choix) {
-
-            case '1':
-
-                tableauChoix(); //calling the tableauChoix function without any arguments
 
 
-                break;
-            case '2':
-                printf("\nchoisissez une case et notez la en bas du programme, si la case n'est pas valable, le programme vous redemendra. \n");
-                break;
-            case '3':
-                printf("ce projet a été créé par Jessy borcard.");
+        if (choix == '1' || choix ==  '2' || choix ==  '3' || choix ==  '4' || choix ==  '5') {
+            switch (choix) {
 
-                break;
-            case '4':
-                classement();
-                break;
-            case '5':
-                return 1;
+                case '1':
+
+                    tableauChoix(); //calling the tableauChoix function without any arguments
+                    menu();
+
+                    break;
+
+                case '2':
+                    system("cls");
+                    printf("\nchoisissez une case et notez la en bas du programme, si la case n'est pas valable, le programme vous redemendra. \n");
+
+                    menu();
+                    break;
+
+                case '3':
+                    system("cls");
+                    printf("\nce projet a été créé par Jessy borcard.\n");
+                    menu();
+                    break;
+                case '4':
+                    system("cls");
+                    classement();
+                    menu();
+                    break;
+                case '5':
+                    return 1;
+            }
+
+        } else {
+
+        menu();
+
         }
-    } while (choix > *"4"); //loop for re-asking the question if choix is bigger than 3
+
 
 
 }
@@ -363,10 +386,9 @@ void ecritureDocument(char *nom_captaine,
 
     fp = fopen("Score.txt", "w"); //open Score.txt
     fputs(nom_captaine, fp); //put the name of the captain into fp
-    fputs("-", fp); //put a - into fp
-    fprintf(fp, "%0.3f", score); //print into fp score as int
-    fputs("-", fp);
     fputs("\n", fp); //add a backspace in the file
+    fprintf(fp, "%0.3f", score); //print into fp score as int
+    fputs("\n", fp);//add a backspace in the file
     fclose(fp); //close fp
 }
 
@@ -385,18 +407,21 @@ int randomiseur() {
 
 void classement() {
 
-    FILE*fp = 0; //create a var that can handle file opening
+    FILE *fp = 0; //create a var that can handle file opening
+    char empty = 0;
     float score = 0;
-    int   a =0; //init vars and array
-    float score_tableau [100] = {0};
-
+    int a = 0; //init vars and array
+    float score_tableau[100] = {0};
 
 
     fp = fopen("Score.txt", "r"); //opening a file
-    while(!feof(fp)) { //do this loop until it reaches the end of file
+    while (!feof(fp)) { //do this loop
+        // until it reaches the end of file
 
-
+        fscanf(fp, "%s", &empty);
         fscanf(fp, "%f", &score); //Scanning float type in the file
+        if (feof(fp))
+            break;
 
         score_tableau[a] = score; //storing them in a array
 
@@ -415,17 +440,16 @@ void classement() {
             }
         }
     }
-a = 1;
-    for (int loop1  = 0; loop1  < 100; loop1 ++)                     //Loop for printing array data after sorting
+    a = 1;
+    for (int loop1 = 0; loop1 < 100; loop1++)                     //Loop for printing array data after sorting
     {
-        if(score_tableau[loop1] != 0){
+        if (score_tableau[loop1] != 0) {
 
 
-            printf("\n%d %0.3f",a, score_tableau[loop1]); //printing the table plus a
+            printf("\n%d %0.3f", a, score_tableau[loop1]); //printing the table plus a
             a++;
         }
     }
-
 
 
     fclose(fp); //close fp
