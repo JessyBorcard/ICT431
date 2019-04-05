@@ -16,6 +16,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <ctype.h>
 
 
 void ecritureDocument(char *, float);
@@ -83,9 +84,9 @@ void tableauAffichage() { //for showing the table as a graphic element
 }
 
 void tableauChoix() {
-    int col = 11, lig = 11, coup_donne = 0, nbr_de_coup = 0, choix_code = 0, ligne = 0, colonne = 0, num = 0, random = 0;
+    int col = 0, lig = 0,   coup_donne = 0, nbr_de_coup = 0, choix_code = 0, ligne = 0, colonne = 0, num = 0, random = 0;
     float score = 0; //declaring and initializing variables
-    char captain_name[256] = {0};
+    char captain_name[256] = {0},ccol[256] = "\00", clig[256] = "\00";
     int vie_bateau = 0;
     int vie_petit_bateau = 2; //this is how much the boats have squares
     int vie_moyen_bateau = 3; //this is how much the boats have squares
@@ -199,18 +200,20 @@ void tableauChoix() {
         printf("\t\t-----la carte de %s-----", captain_name);
 
 
-        tableauAffichage();
+        tableauAffichage(); //calls the tableauAffichage
 
 
         do { //this loop will be true if the input of lig or col are smaller or bigger than 1 or 10
 
 
             printf("\nchoix de Ligne : ");
-            scanf("%d", &lig); //save the input to lig
+            scanf("%s", clig); //save the input to clig
+            lig = atoi(clig); //cast clig into lig as int
             lig--;//convert for entering the array more easily
 
             printf("\nchoix de Colonne : ");
-            scanf("%d", &col); //save the input to col
+            scanf("%s", ccol);//save the input to ccol
+            col = atoi(ccol);//cast ccol into col as int
             col--;//convert for entering the array more easily
 
             if ((lig > 10 || col > 10) &&
@@ -219,86 +222,93 @@ void tableauChoix() {
 
             }
 
-        } while (lig < 0 || col < 0 || lig > 11 || col > 11);
+        } while (lig < 0 || col < 0 || lig > 9 || col > 9); //this loop will loop again if the input is smaller than 0 or bigger than 9
         system("cls"); //clear, for a better view
 
-        if (tableau_cord[lig][col] == *"X" || tableau_cord[lig][col] == *"-") { //test if the case is already chosen
-            printf("cette case est déjà touchée\n");
-        }
-
-        if (tableau_choix[lig][col] == 0) {
-            printf("loupé! \n\n\n"); //if the player's choice of lig and col equals 0 it says loupé
-            tableau_cord[lig][col] = *"-";
-        }
 
 
-        if (tableau_cord[lig][col] == *"X") {//beep
-
-        } else {
-            if (tableau_choix[lig][col] ==
-                PETIT_BATEAU) { // if the player's choice of lig and col equals 1 the result is true
-                tableau_cord[lig][col] = *"X"; //replacing the tableau_cord value depending on lig and col by an X
-                printf("\ntouché! \n\n\n");
-                score++; //adds 1 to score
-                vie_petit_bateau--; //soustract 1 from vie_petit_bateau
-                vie_bateau--; //soustract 1 from vie_bateau
-                if (vie_petit_bateau ==
-                    0) {  // if vie_petit_bateau equals 0 the condition shows that the petit bateau sinked
 
 
-                    printf("Le petit bâteau à été coulé!!\n\n");
-                    score = PETIT_BATEAU * SCORE_MULTIPLIER;
-                }
 
 
-            }
-            if (tableau_choix[lig][col] ==
-                BATEAU_MOYEN) { // if the player's choice of lig and col equals 2 the result is true
-                tableau_cord[lig][col] = *"X"; //replacing the tableau_cord value depending on lig and col by an X
-                printf("\ntouché! \n\n\n");
-                score++; //adds 1 to score
-                vie_moyen_bateau--; //soustract 1 from vie_moyen_bateau
-                vie_bateau--; //soustract 1 from vie_bateau
-                if (vie_moyen_bateau ==
-                    0) {  // if vie_moyen_bateau equals 0 the condition shows that the moyen bateau sinked
-
-                    printf("Le bâteau moyen à été coulé!!\n\n");
-                    score = BATEAU_MOYEN * SCORE_MULTIPLIER;
-                }
-            }
-            if (tableau_choix[lig][col] ==
-                GRAND_BATEAU) { // if the player's choice of lig and col equals 3 the result is true
-                tableau_cord[lig][col] = *"X"; //replacing the tableau_cord value depending on lig and col by an X
-                printf("\ntouché! \n\n\n");
-                score++; //adds 1 to score
-                vie_grand_bateau--; //soustract 1 from vie_grand_bateau
-                vie_bateau--; //soustract 1 from vie_bateau
-                if (vie_grand_bateau ==
-                    0) {  // if vie_grand_bateau equals 0 the condition shows that the grand bateau sinked
-
-                    printf("Le grand bâteau à été coulé!! \n\n");
-                    score = GRAND_BATEAU * SCORE_MULTIPLIER;
-                }
-            }
-            if (tableau_choix[lig][col] ==
-                IMMENSE_BATEAU) { // if the player's choice of lig and col equals 4 the result is true
-                tableau_cord[lig][col] = *"X"; //replacing the tableau_cord value depending on lig and col by an X
-                printf("\ntouché! \n\n\n");
-                score++; //adds 1 to score
-                vie_immense_beateau--; //soustract 1 from vie_immense_bateau
-                vie_bateau--; //soustract 1 from vie_bateau
-                if (vie_immense_beateau ==
-                    0) { // if vie_immense_bateau equals 0 the condition shows that the immense bateau sinked
-                    printf("L'immense Bâteau à été coulé!!\n\n");
-                    score = IMMENSE_BATEAU * SCORE_MULTIPLIER; //save 4*10 into score
-                }
+            if (tableau_cord[lig][col] == *"X" || tableau_cord[lig][col] == *"-") { //test if the case is already chosen
+                printf("cette case est déjà touchée\n");
             }
 
-        }
+            if (tableau_choix[lig][col] == 0) {
+                printf("loupé! \n\n\n"); //if the player's choice of lig and col equals 0 it says loupé
+                tableau_cord[lig][col] = *"-";
+            }
+
+
+            if (tableau_cord[lig][col] == *"X") {//beep
+
+            } else {
+                if (tableau_choix[lig][col] ==
+                    PETIT_BATEAU) { // if the player's choice of lig and col equals 1 the result is true
+                    tableau_cord[lig][col] = *"X"; //replacing the tableau_cord value depending on lig and col by an X
+                    printf("\ntouché! \n\n\n");
+                    score++; //adds 1 to score
+                    vie_petit_bateau--; //soustract 1 from vie_petit_bateau
+                    vie_bateau--; //soustract 1 from vie_bateau
+                    if (vie_petit_bateau ==
+                        0) {  // if vie_petit_bateau equals 0 the condition shows that the petit bateau sinked
+
+
+                        printf("Le petit bâteau à été coulé!!\n\n");
+                        score = PETIT_BATEAU * SCORE_MULTIPLIER;
+                    }
+
+
+                }
+                if (tableau_choix[lig][col] ==
+                    BATEAU_MOYEN) { // if the player's choice of lig and col equals 2 the result is true
+                    tableau_cord[lig][col] = *"X"; //replacing the tableau_cord value depending on lig and col by an X
+                    printf("\ntouché! \n\n\n");
+                    score++; //adds 1 to score
+                    vie_moyen_bateau--; //soustract 1 from vie_moyen_bateau
+                    vie_bateau--; //soustract 1 from vie_bateau
+                    if (vie_moyen_bateau ==
+                        0) {  // if vie_moyen_bateau equals 0 the condition shows that the moyen bateau sinked
+
+                        printf("Le bâteau moyen à été coulé!!\n\n");
+                        score = BATEAU_MOYEN * SCORE_MULTIPLIER;
+                    }
+                }
+                if (tableau_choix[lig][col] ==
+                    GRAND_BATEAU) { // if the player's choice of lig and col equals 3 the result is true
+                    tableau_cord[lig][col] = *"X"; //replacing the tableau_cord value depending on lig and col by an X
+                    printf("\ntouché! \n\n\n");
+                    score++; //adds 1 to score
+                    vie_grand_bateau--; //soustract 1 from vie_grand_bateau
+                    vie_bateau--; //soustract 1 from vie_bateau
+                    if (vie_grand_bateau ==
+                        0) {  // if vie_grand_bateau equals 0 the condition shows that the grand bateau sinked
+
+                        printf("Le grand bâteau à été coulé!! \n\n");
+                        score = GRAND_BATEAU * SCORE_MULTIPLIER;
+                    }
+                }
+                if (tableau_choix[lig][col] ==
+                    IMMENSE_BATEAU) { // if the player's choice of lig and col equals 4 the result is true
+                    tableau_cord[lig][col] = *"X"; //replacing the tableau_cord value depending on lig and col by an X
+                    printf("\ntouché! \n\n\n");
+                    score++; //adds 1 to score
+                    vie_immense_beateau--; //soustract 1 from vie_immense_bateau
+                    vie_bateau--; //soustract 1 from vie_bateau
+                    if (vie_immense_beateau ==
+                        0) { // if vie_immense_bateau equals 0 the condition shows that the immense bateau sinked
+                        printf("L'immense Bâteau à été coulé!!\n\n");
+                        score = IMMENSE_BATEAU * SCORE_MULTIPLIER; //save 4*10 into score
+                    }
+                }
+
+            }
 
 
         coup_donne++;
     } while (coup_donne < nbr_de_coup); //this loop makes loops depending on how many times the player wants to play
+
     if (vie_bateau == 0) {
 
         printf("vous avez gagner %s !\n", captain_name);
